@@ -185,13 +185,11 @@ inline Memory::Memory(const ClientPatternFinder& clientPatternFinder, const Engi
     debugMsg = tier0.getFunctionAddress("Msg").template as<decltype(debugMsg)>();
 
 #if IS_WIN32() || IS_WIN64()
-    // const DynamicLibrary gameOverlayRenderer{ "gameoverlayrenderer.dll" };
+    const DynamicLibrary gameOverlayRenderer{ "gameoverlayrenderer.dll" };
 
     PatternNotFoundHandler patternNotFoundHandler;
-    // present = PatternFinder{ gameOverlayRenderer.getCodeSection().raw(), patternNotFoundHandler}("8B 4D ? A1 ? ? ? ? 51 FF"_pat).add(4).as<std::uintptr_t>();
-    // reset = PatternFinder{ gameOverlayRenderer.getCodeSection().raw(), patternNotFoundHandler }("E8 ? ? ? ? A1 ? ? ? ? 57 53 C7"_pat).add(6).as<std::uintptr_t>();
-    present = 0;
-    reset = 0;
+   present = PatternFinder{ gameOverlayRenderer.getCodeSection().raw(), patternNotFoundHandler}("FF 75 ? A1 ? ? ? ? FF 75 ? FF 75 ? FF 75 ? 53"_pat).add(4).as<std::uintptr_t>();
+    reset = PatternFinder{ gameOverlayRenderer.getCodeSection().raw(), patternNotFoundHandler }("E8 ? ? ? ? A1 ? ? ? ? 57 53 C7"_pat).add(6).as<std::uintptr_t>();
 
     clientMode = **reinterpret_cast<csgo::ClientMode***>((*reinterpret_cast<uintptr_t**>(clientInterface))[10] + 5);
     input = *reinterpret_cast<csgo::Input**>((*reinterpret_cast<uintptr_t**>(clientInterface))[16] + 1);
