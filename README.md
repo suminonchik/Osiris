@@ -353,4 +353,4 @@ This project is licensed under the [MIT License](https://opensource.org/licenses
 
 ## See also
 *   [Anubis](https://github.com/danielkrupinski/Anubis) - free and open source cheat for CS:GO
-*   [GOESP](https://github.com/danielkrupinski/GOESP) - free and open source cross-platform streamproof ESP hack for Counter-Strike: Global Offensive, written in modern C++
+*   [GOESP](https://github.com/danielkrupinski/GOESP) - free and open source cross-platform streamproof ESP hack for Counter-Strike: Global Offensive, written in modern C++ 
