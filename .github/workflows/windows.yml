@@ -3,46 +3,25 @@ name: Windows
 on: [push, pull_request]
 
 jobs:
-  msbuild:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-2019, windows-2022]
-        toolset: [ClangCL, MSVC]
-        configuration: [Debug, Release]
-        exclude:
-          - os: windows-2019
-            toolset: ClangCL
-    steps:
-    - uses: actions/checkout@v3
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v1.1
-    - name: Set toolset
-      if: matrix.toolset == 'ClangCL'
-      run: echo "toolset=/p:PlatformToolset=${{ matrix.toolset }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-    - name: Build
-      shell: cmd
-      run: msbuild Osiris.sln /p:Platform=x86 /p:Configuration=${{ matrix.configuration }} ${{ env.toolset }}
+  build:
+    runs-on: windows-2022
 
-  cmake:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [windows-2019, windows-2022]
-        toolset: [ClangCL, MSVC]
-        configuration: [Debug, Release]
-        arch: [Win32, x64]
-        exclude:
-          - os: windows-2019
-            toolset: ClangCL
     steps:
-    - uses: actions/checkout@v3
-    - name: Set toolset
-      if: matrix.toolset == 'ClangCL'
-      run: echo "toolset=-T ${{ matrix.toolset }}" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-    - name: configure
-      run: cmake -Werror=dev -D BUILD_TESTS=1 -A ${{ matrix.arch }} ${{ env.toolset }} -B build
-    - name: build
-      run: cmake --build build --config ${{ matrix.configuration }}
-    - name: run unit tests
-      run: ctest --test-dir build --output-on-failure --schedule-random -j $env:NUMBER_OF_PROCESSORS
+    - uses: actions/checkout@v4
+      with:
+        ref: csgo
+
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Build Osiris Win32
+      run: msbuild Osiris.sln /p:Configuration=Release /p:Platform=Win32
+
+    - name: Upload Osiris DLL
+      uses: actions/upload-artifact@v4
+      with:
+        name: Osiris-CSGO-Win32
+        path: |
+          Release/Osiris.dll
+          bin/Release/Osiris.dll
+          build/Release/Osiris.dll
