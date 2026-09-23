@@ -185,11 +185,11 @@ inline Memory::Memory(const ClientPatternFinder& clientPatternFinder, const Engi
     debugMsg = tier0.getFunctionAddress("Msg").template as<decltype(debugMsg)>();
 
 #if IS_WIN32() || IS_WIN64()
-    const DynamicLibrary shaderApiDx9{ "shaderapidx9.dll" };
+    const DynamicLibrary d3d9{ "d3d9.dll" };
 
     PatternNotFoundHandler patternNotFoundHandler;
-    present = PatternFinder{ shaderApiDx9.getCodeSection().raw(), patternNotFoundHandler}("8B 4D ? A1 ? ? ? ? 51 FF"_pat).add(4).as<std::uintptr_t>();
-    reset = PatternFinder{ shaderApiDx9.getCodeSection().raw(), patternNotFoundHandler }("E8 ? ? ? ? A1 ? ? ? ? 57 53 C7"_pat).add(6).as<std::uintptr_t>();
+    present = 0;
+    reset = 0;
 
     clientMode = **reinterpret_cast<csgo::ClientMode***>((*reinterpret_cast<uintptr_t**>(clientInterface))[10] + 5);
     input = *reinterpret_cast<csgo::Input**>((*reinterpret_cast<uintptr_t**>(clientInterface))[16] + 1);
