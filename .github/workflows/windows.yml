@@ -21,6 +21,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Osiris-CSGO-DLL
-        path: |
-          build/Release/Osiris.dll
-          build/Osiris.dll
+        path: '**/*.dll'
