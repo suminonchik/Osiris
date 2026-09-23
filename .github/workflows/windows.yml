@@ -11,17 +11,16 @@ jobs:
       with:
         ref: csgo
 
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v2
+    - name: Configure CMake (Win32)
+      run: cmake -B build -A Win32
 
-    - name: Build Osiris Win32
-      run: msbuild Osiris.sln /p:Configuration=Release /p:Platform=Win32
+    - name: Build Osiris Release
+      run: cmake --build build --config Release
 
     - name: Upload Osiris DLL
       uses: actions/upload-artifact@v4
       with:
-        name: Osiris-CSGO-Win32
+        name: Osiris-CSGO-DLL
         path: |
-          Release/Osiris.dll
-          bin/Release/Osiris.dll
           build/Release/Osiris.dll
+          build/Osiris.dll
